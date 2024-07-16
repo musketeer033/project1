@@ -1,9 +1,9 @@
-import React from "react";
-import { useContext } from "react";
-import { Context } from "../../main";
-import { Navigate } from "react-router-dom";
+// import React from "react";
+// import { useContext } from "react";
+// import { Context } from "../../main";
+// import { Navigate } from "react-router-dom";
 import HeroSection from "./HeroSection";
-import HowItWorks from "./HowItWorks";
+// import HowItWorks from "./HowItWorks";
 import PopularCategories from "./PopularCategories";
 import PopularCompanies from "./PopularCompanies";
 
@@ -16,7 +16,7 @@ const Home = () => {
     <>
       <section className="homePage page">
         <HeroSection />
-        <HowItWorks />
+        {/* <HowItWorks /> */}
         <PopularCategories />
         <PopularCompanies />
       </section>

@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { FaBuilding, FaSuitcase, FaUsers, FaUserPlus } from "react-icons/fa";
 
 const HeroSection = () => {
@@ -35,9 +35,7 @@ const HeroSection = () => {
           <div className="title">
             <h1>Find a job that suits</h1>
             <h1>your interests and skills</h1>
-            <p>
-              A very simple but effective place for you to find jobs.
-            </p>
+            <p>A very simple but effective place for you to find jobs.</p>
           </div>
           <div className="image">
             <img src="/heroS.jpg" alt="hero" />
