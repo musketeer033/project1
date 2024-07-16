@@ -10,13 +10,11 @@ import Navbar from "./components/Layout/Navbar";
 import Footer from "./components/Layout/Footer";
 import Home from "./components/Home/Home";
 import Jobs from "./components/Job/Jobs";
-import JobDetails from "./components/Job/JobDetails";
 import Application from "./components/Application/Application";
 import MyApplications from "./components/Application/MyApplications";
 import PostJob from "./components/Job/PostJob";
 import NotFound from "./components/NotFound/NotFound";
 import MyJobs from "./components/Job/MyJobs";
-
 
 const App = () => {
   const { isAuthorized, setIsAuthorized, setUser } = useContext(Context);
@@ -47,7 +45,6 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Home />} />
           <Route path="/job/getall" element={<Jobs />} />
-          <Route path="/job/id" element={<JobDetails />} />
           <Route path="/applications" element={<Application />} />
           <Route path="/applications/me" element={<MyApplications />} />
           <Route path="/job/post" element={<PostJob />} />
