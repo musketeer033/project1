@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { FaUserPlus } from "react-icons/fa";
 import { MdFindInPage } from "react-icons/md";
 import { IoMdSend } from "react-icons/io";
@@ -20,16 +20,12 @@ const HowItWorks = () => {
             <div className="card">
               <MdFindInPage />
               <p>Find a Job/Post a Job</p>
-              <p>
-                Find a job or Post a Job.
-              </p>
+              <p>Find a job or Post a Job.</p>
             </div>
             <div className="card">
               <IoMdSend />
               <p>Apply For Job/Recruit Suitable Candidates</p>
-              <p>
-                Apply and get selected by recruiters.
-              </p>
+              <p>Apply and get selected by recruiters.</p>
             </div>
           </div>
         </div>
