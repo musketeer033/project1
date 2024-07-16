@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLock2Fill } from "react-icons/ri";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -15,8 +15,14 @@ const Login = () => {
   const [role1, setRole1] = useState("");
   const [role2, setRole2] = useState("");
 
-
   const { isAuthorized, setIsAuthorized } = useContext(Context);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+    console.log("hello");
+    navigate("/job/Myjobs");
+  };
 
   // const handleLogin = async (e) => {
   //   e.preventDefault();
@@ -49,21 +55,24 @@ const Login = () => {
     <>
       <section className="authPage">
         <div className="container">
-          <div className="header">
-            <img src="/JobZeelogo.png" alt="logo" />
+          <div className=" flex flex-col justify-center items-center mb-2">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Coat_of_arms_of_Chhattisgarh.svg/300px-Coat_of_arms_of_Chhattisgarh.svg.png"
+            alt="Website Logo"
+            className="w-36 md:w-48"
+          />
             <h3>Login to your account</h3>
           </div>
           <form>
             <div className="inputTag">
               <label className="">Login As</label>
-
               <div>
                 <select value={role1} onChange={(e) => setRole1(e.target.value)}>
                   <option value="">Select District/Division</option>
                   <option value="Employer">Employer</option>
                   <option value="Job Seeker">Job Seeker</option>
                 </select>
-                <TbBuildingBank/>
+                <TbBuildingBank />
               </div>
               <div className="h-2"></div>
               <div className="">
@@ -72,7 +81,7 @@ const Login = () => {
                   <option value="Employer">Employer</option>
                   <option value="Job Seeker">Job Seeker</option>
                 </select>
-                <BsBuildings/>
+                <BsBuildings />
               </div>
             </div>
 
@@ -102,7 +111,7 @@ const Login = () => {
                     <RiLock2Fill />
                   </div>
                 </div>
-                <button type="submit">
+                <button type="button" onClick={handleSubmit}>
                   Login
                 </button>
               </>
