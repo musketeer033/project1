@@ -42,12 +42,54 @@ const Jobs = () => {
       poc: "Michael Johnson",
       pdfLink: "/path/to/pdf",
     },
+    {
+      _id: "4",
+      title: "Data Scientist",
+      category: "Technology",
+      country: "United States",
+      vacancyCount: 4,
+      division: "Engineering",
+      city: "New York",
+      collegeName: "Stanford University",
+      lastDate: "2024-08-25",
+      poc: "Emily Brown",
+      pdfLink: "/path/to/pdf",
+    },
+    {
+      _id: "5",
+      title: "Digital Marketing Manager",
+      category: "Marketing",
+      country: "Canada",
+      vacancyCount: 2,
+      division: "Marketing",
+      city: "Vancouver",
+      collegeName: "UBC",
+      lastDate: "2024-09-10",
+      poc: "David Wilson",
+      pdfLink: "/path/to/pdf",
+    },
+    {
+      _id: "6",
+      title: "Financial Advisor",
+      category: "Finance",
+      country: "United Kingdom",
+      vacancyCount: 3,
+      division: "Finance",
+      city: "Edinburgh",
+      collegeName: "University of Edinburgh",
+      lastDate: "2024-08-15",
+      poc: "Sophie Turner",
+      pdfLink: "/path/to/pdf",
+    },
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterCountry, setFilterCountry] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [jobsPerPage] = useState(3); // Number of jobs per page
 
+  // Filtered jobs based on search and filters
   const filteredJobs = jobs.filter((job) => {
     return (
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -55,6 +97,14 @@ const Jobs = () => {
       (filterCountry ? job.country === filterCountry : true)
     );
   });
+
+  // Logic for pagination
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <section className="jobs page bg-gray-100 py-10">
@@ -65,7 +115,9 @@ const Jobs = () => {
             alt="Website Logo"
             className="w-36 md:w-48"
           />
-          <h1 className="text-3xl font-bold text-gray-800">All Available Jobs</h1>
+          <h1 className="text-3xl font-bold text-gray-800">
+            All Available Jobs
+          </h1>
         </div>
         <div className="mb-4 flex flex-col sm:flex-row gap-4">
           <input
@@ -97,13 +149,17 @@ const Jobs = () => {
           </select>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {filteredJobs.map((job) => (
+          {currentJobs.map((job) => (
             <div key={job._id} className="bg-white p-4 rounded-md shadow-md">
               <h2 className="text-xl font-semibold mb-2">{job.title}</h2>
-              <p className="text-gray-600 mb-1">Vacancy Count: {job.vacancyCount}</p>
+              <p className="text-gray-600 mb-1">
+                Vacancy Count: {job.vacancyCount}
+              </p>
               <p className="text-gray-600 mb-1">Division: {job.division}</p>
               <p className="text-gray-600 mb-1">City/District: {job.city}</p>
-              <p className="text-gray-600 mb-1">College Name: {job.collegeName}</p>
+              <p className="text-gray-600 mb-1">
+                College Name: {job.collegeName}
+              </p>
               <p className="text-gray-600 mb-1">Last Date: {job.lastDate}</p>
               <div className="flex items-center mt-2">
                 <Link
@@ -123,6 +179,25 @@ const Jobs = () => {
               </div>
             </div>
           ))}
+        </div>
+        {/* Pagination */}
+        <div className="mt-8 flex justify-center">
+          {Array.from(
+            { length: Math.ceil(filteredJobs.length / jobsPerPage) },
+            (_, index) => (
+              <button
+                key={index}
+                onClick={() => paginate(index + 1)}
+                className={`px-4 py-2 mx-1 rounded-md ${
+                  currentPage === index + 1
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+                }`}
+              >
+                {index + 1}
+              </button>
+            )
+          )}
         </div>
       </div>
     </section>
