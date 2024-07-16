@@ -6,11 +6,15 @@ import { FaRegUser } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Context } from "../../main";
+import { BsBuildings } from "react-icons/bs";
+import { TbBuildingBank } from "react-icons/tb";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [role1, setRole1] = useState("");
+  const [role2, setRole2] = useState("");
+
 
   const { isAuthorized, setIsAuthorized } = useContext(Context);
 
@@ -51,44 +55,58 @@ const Login = () => {
           </div>
           <form>
             <div className="inputTag">
-              <label>Login As</label>
+              <label className="">Login As</label>
+
               <div>
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
-                  <option value="">Select Role</option>
+                <select value={role1} onChange={(e) => setRole1(e.target.value)}>
+                  <option value="">Select District/Division</option>
                   <option value="Employer">Employer</option>
                   <option value="Job Seeker">Job Seeker</option>
                 </select>
-                <FaRegUser />
+                <TbBuildingBank/>
+              </div>
+              <div className="h-2"></div>
+              <div className="">
+                <select value={role2} onChange={(e) => setRole2(e.target.value)}>
+                  <option value="">Select College</option>
+                  <option value="Employer">Employer</option>
+                  <option value="Job Seeker">Job Seeker</option>
+                </select>
+                <BsBuildings/>
               </div>
             </div>
-            <div className="inputTag">
-              <label>Email Address</label>
-              <div>
-                <input
-                  type="email"
-                  placeholder="zk@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <MdOutlineMailOutline />
-              </div>
-            </div>
-            <div className="inputTag">
-              <label>Password</label>
-              <div>
-                <input
-                  type="password"
-                  placeholder="Your Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <RiLock2Fill />
-              </div>
-            </div>
-            <button type="submit">
-              Login
-            </button>
-            <Link to={"/register"}>Register Now</Link>
+
+            {(role1.length !== 0 && role2.length !== 0) && (
+              <>
+                <div className="inputTag">
+                  <label>Email Address</label>
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="zk@gmail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <MdOutlineMailOutline />
+                  </div>
+                </div>
+                <div className="inputTag">
+                  <label>Mobile</label>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Your number"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <RiLock2Fill />
+                  </div>
+                </div>
+                <button type="submit">
+                  Login
+                </button>
+              </>
+            )}
           </form>
         </div>
         <div className="banner">
