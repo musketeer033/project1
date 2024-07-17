@@ -32,28 +32,32 @@ const HeroSection = () => {
 
   const navigate = useNavigate();
 
-  const handleAddVacancy = ()=>{
+  const handleAddVacancy = () => {
     console.log("Add Vacancy")
   }
   return (
     <>
-      <div className="heroSection">
-        <div className=" flex justify-end px-10">
-          <div className=" flex gap-5">
-          <button
-              onClick={()=>navigate("/login")}
-              className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              College
-            </button>
-            <button
-              onClick={()=>navigate("/job/getall")}
-              className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              View Jobs
-            </button>
-          </div>
+      <div className=" flex justify-between px-10 my-5 ">
+        <div className="bg-gray-200 rounded-full h-20 w-20 flex items-center justify-center text-gray-600 font-bold text-xl mr-3">
+          <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Coat_of_arms_of_Chhattisgarh.svg/300px-Coat_of_arms_of_Chhattisgarh.svg.png' alt='' />
         </div>
+        <div className="p-5">
+          <button
+            onClick={() => navigate("/login")}
+            className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 mr-5"
+          >
+            College
+          </button>
+          <button
+            onClick={() => navigate("/job/getall")}
+            className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            View Jobs
+          </button>
+        </div>
+      </div>
+      <div className="heroSection">
+
         <div className="container">
           <div className="title">
             <h1>Find a job that suits</h1>
