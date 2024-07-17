@@ -1,100 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Jobs = () => {
-  const [jobs] = useState([
-    {
-      _id: "1",
-      title: "Software Engineer",
-      category: "Technology",
-      country: "United States",
-      vacancyCount: 5,
-      division: "Engineering",
-      city: "San Francisco",
-      collegeName: "University of California",
-      lastDate: "2024-08-31",
-      poc: "John Doe",
-      pdfLink: "/path/to/pdf",
-    },
-    {
-      _id: "2",
-      title: "Marketing Specialist",
-      category: "Marketing",
-      country: "Canada",
-      vacancyCount: 3,
-      division: "Marketing",
-      city: "Toronto",
-      collegeName: "University of Toronto",
-      lastDate: "2024-09-15",
-      poc: "Jane Smith",
-      pdfLink: "/path/to/pdf",
-    },
-    {
-      _id: "3",
-      title: "Financial Analyst",
-      category: "Finance",
-      country: "United Kingdom",
-      vacancyCount: 2,
-      division: "Finance",
-      city: "London",
-      collegeName: "London School of Economics",
-      lastDate: "2024-08-20",
-      poc: "Michael Johnson",
-      pdfLink: "/path/to/pdf",
-    },
-    {
-      _id: "4",
-      title: "Data Scientist",
-      category: "Technology",
-      country: "United States",
-      vacancyCount: 4,
-      division: "Engineering",
-      city: "New York",
-      collegeName: "Stanford University",
-      lastDate: "2024-08-25",
-      poc: "Emily Brown",
-      pdfLink: "/path/to/pdf",
-    },
-    {
-      _id: "5",
-      title: "Digital Marketing Manager",
-      category: "Marketing",
-      country: "Canada",
-      vacancyCount: 2,
-      division: "Marketing",
-      city: "Vancouver",
-      collegeName: "UBC",
-      lastDate: "2024-09-10",
-      poc: "David Wilson",
-      pdfLink: "/path/to/pdf",
-    },
-    {
-      _id: "6",
-      title: "Financial Advisor",
-      category: "Finance",
-      country: "United Kingdom",
-      vacancyCount: 3,
-      division: "Finance",
-      city: "Edinburgh",
-      collegeName: "University of Edinburgh",
-      lastDate: "2024-08-15",
-      poc: "Sophie Turner",
-      pdfLink: "/path/to/pdf",
-    },
-  ]);
-
+  const [jobs, setJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterCountry, setFilterCountry] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [jobsPerPage] = useState(3); // Number of jobs per page
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch jobs data from the API
+    axios
+      .get("https://vacancy.adnan-qasim.me/job/get-all-jobs")
+      .then((response) => {
+        console.log(response.data); // Ensure API response structure matches your needs
+        setJobs(response.data); // Set fetched jobs to state
+      })
+      .catch((error) => {
+        console.error("Error fetching jobs:", error);
+      });
+  }, []);
 
   // Filtered jobs based on search and filters
   const filteredJobs = jobs.filter((job) => {
     return (
-      job.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (filterCategory ? job.category === filterCategory : true) &&
-      (filterCountry ? job.country === filterCountry : true)
+      job.vacancy_details[0].vacancy_title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) &&
+      (filterCategory
+        ? job.vacancy_details[0].subject_name === filterCategory
+        : true) &&
+      (filterCountry ? job.college_state === filterCountry : true)
     );
   });
 
@@ -106,8 +45,6 @@ const Jobs = () => {
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const navigate = useNavigate();
-   
   const handleSubmit = () => {
     console.log("hello");
     navigate("/login");
@@ -115,12 +52,14 @@ const Jobs = () => {
 
   return (
     <section className="jobs page bg-gray-100 py-10">
-      <div className="flex justify-end px-5"> <button
-              onClick={()=>navigate("login")}
-              className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              College
-            </button></div>
+      <div className="flex justify-end px-5">
+        <button
+          onClick={() => navigate("login")}
+          className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          College
+        </button>
+      </div>
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-between gap-4 mb-8">
           <img
@@ -146,43 +85,49 @@ const Jobs = () => {
             onChange={(e) => setFilterCategory(e.target.value)}
           >
             <option value="">All Categories</option>
-            <option value="Technology">Technology</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Finance">Finance</option>
+            <option value="Mathematics">Mathematics</option>
+            {/* Add other subject names as options */}
           </select>
           <select
             className="p-2 border rounded-md"
             value={filterCountry}
             onChange={(e) => setFilterCountry(e.target.value)}
           >
-            <option value="">All Countries</option>
-            <option value="United States">United States</option>
-            <option value="Canada">Canada</option>
-            <option value="United Kingdom">United Kingdom</option>
+            <option value="">All States</option>
+            <option value="CG">CG</option>
+            {/* Add other state options */}
           </select>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
           {currentJobs.map((job) => (
-            <div key={job._id} className="bg-white p-4 rounded-md shadow-md">
-              <h2 className="text-xl font-semibold mb-2">{job.title}</h2>
+            <div key={job.id} className="bg-white p-4 rounded-md shadow-md">
+              <h2 className="text-xl font-semibold mb-2">
+                {job.vacancy_details[0].vacancy_title}
+              </h2>
               <p className="text-gray-600 mb-1">
-                Vacancy Count: {job.vacancyCount}
+                Vacancy Count: {job.vacancy_details[0].vacancy_count}
               </p>
-              <p className="text-gray-600 mb-1">Division: {job.division}</p>
-              <p className="text-gray-600 mb-1">City/District: {job.city}</p>
               <p className="text-gray-600 mb-1">
-                College Name: {job.collegeName}
+                Division: {job.college_division}
               </p>
-              <p className="text-gray-600 mb-1">Last Date: {job.lastDate}</p>
+              <p className="text-gray-600 mb-1">
+                City/District: {job.college_district}
+              </p>
+              <p className="text-gray-600 mb-1">
+                College Name: {job.college_name}
+              </p>
+              <p className="text-gray-600 mb-1">
+                Last Date: {job.vacancy_details[0].apply_last_date}
+              </p>
               <div className="flex items-center mt-2">
                 <Link
-                  to={`/job/${job._id}`}
+                  to={`/job/${job.id}`}
                   className="text-blue-500 hover:underline mr-4"
                 >
                   View Details
                 </Link>
                 <a
-                  href={job.pdfLink}
+                  href={job.job_desc}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
