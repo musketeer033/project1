@@ -38,7 +38,7 @@ const HeroSection = () => {
   return (
     <>
       <div className="heroSection">
-        <div className=" flex justify-end px-10">
+        <div className="flex justify-end px-10">
           <div className=" flex gap-5">
           <button
               onClick={()=>navigate("/login")}

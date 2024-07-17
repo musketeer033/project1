@@ -54,7 +54,7 @@ const Jobs = () => {
     <section className="jobs page bg-gray-100 py-10">
       <div className="flex justify-end px-5">
         <button
-          onClick={() => navigate("login")}
+          onClick={() => navigate("/login")}
           className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           College
