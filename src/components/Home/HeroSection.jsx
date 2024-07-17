@@ -38,10 +38,10 @@ const HeroSection = () => {
   return (
     <>
       <div className=" flex justify-between px-10 my-5 ">
-        <div className="bg-gray-200 rounded-full h-20 w-20 flex items-center justify-center text-gray-600 font-bold text-xl mr-3">
+        <div className="bg-gray-200 rounded-full h-16 w-16 flex items-center justify-center text-gray-600 font-bold text-xl mr-3">
           <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Coat_of_arms_of_Chhattisgarh.svg/300px-Coat_of_arms_of_Chhattisgarh.svg.png' alt='' />
         </div>
-        <div className="p-5">
+        <div className="">
           <button
             onClick={() => navigate("/login")}
             className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 mr-5"
