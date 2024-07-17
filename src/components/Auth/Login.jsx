@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLock2Fill } from "react-icons/ri";
 import { Link, Navigate, useNavigate } from "react-router-dom";
@@ -12,80 +12,111 @@ import { TbBuildingBank } from "react-icons/tb";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role1, setRole1] = useState("");
-  const [role2, setRole2] = useState("");
-
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedCollege, setSelectedCollege] = useState("");
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [collegeOptions, setCollegeOptions] = useState([]);
   const { isAuthorized, setIsAuthorized } = useContext(Context);
-
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    console.log("hello");
-    navigate("/job/Myjobs");
+  useEffect(() => {
+    // Fetch division and college options
+    const fetchDistrictAndCollegeOptions = async () => {
+      try {
+        const response = await axios.get("https://vacancy.adnan-qasim.me/college/get-all-colleges");
+        console.log(response.data);
+        // Group data by district and division
+        const groupedData = response.data.reduce((acc, item) => {
+          const key = `${item.district_name} - Division ${item.division}`;
+          if (!acc[key]) {
+            acc[key] = [];
+          }
+          acc[key].push(item.institute_name);
+          return acc;
+        }, {});
+
+        setDistrictOptions(Object.keys(groupedData));
+        setCollegeOptions(groupedData);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch districts and colleges");
+      }
+    };
+
+    // Call fetchDistrictAndCollegeOptions when component mounts
+    fetchDistrictAndCollegeOptions();
+  }, []);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const options = {
+        method: "GET",
+        url: "https://vacancy.adnan-qasim.me/college/college-admin-login",
+        params: { phone: password, email: email },
+      };
+
+      const { data } = await axios.request(options);
+      console.log(data);
+      toast.success("Login successful!");
+      navigate("/vacancy");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to log in");
+    }
   };
-
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const { data } = await axios.post(
-  //       "https://jobdekho-wkbb.onrender.com/api/v1/user/login",
-  //       { email, password, role },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     toast.success(data.message);
-  //     setEmail("");
-  //     setPassword("");
-  //     setRole("");
-  //     setIsAuthorized(true);
-  //   } catch (error) {
-  //     toast.error(error.response.data.message);
-  //   }
-  // };
-
-  // if(isAuthorized){
-  //   return <Navigate to={'/'}/>
-  // }
 
   return (
     <>
       <section className="authPage">
         <div className="container">
-          <div className=" flex flex-col justify-center items-center mb-2">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Coat_of_arms_of_Chhattisgarh.svg/300px-Coat_of_arms_of_Chhattisgarh.svg.png"
-            alt="Website Logo"
-            className="w-36 md:w-48"
-          />
+          <div className="flex flex-col justify-center items-center mb-2">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Coat_of_arms_of_Chhattisgarh.svg/300px-Coat_of_arms_of_Chhattisgarh.svg.png"
+              alt="Website Logo"
+              className="w-36 md:w-48"
+            />
             <h3>Login to your account</h3>
           </div>
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="inputTag">
-              <label className="">Login As</label>
+              <label>Login As</label>
               <div>
-                <select value={role1} onChange={(e) => setRole1(e.target.value)}>
+                <select
+                  value={selectedDistrict}
+                  onChange={(e) => {
+                    setSelectedDistrict(e.target.value);
+                    setSelectedCollege("");
+                  }}
+                >
                   <option value="">Select District/Division</option>
-                  <option value="Employer">Employer</option>
-                  <option value="Job Seeker">Job Seeker</option>
+                  {districtOptions.map((district, index) => (
+                    <option key={index} value={district}>
+                      {district}
+                    </option>
+                  ))}
                 </select>
                 <TbBuildingBank />
               </div>
               <div className="h-2"></div>
               <div className="">
-                <select value={role2} onChange={(e) => setRole2(e.target.value)}>
+                <select
+                  value={selectedCollege}
+                  onChange={(e) => setSelectedCollege(e.target.value)}
+                  disabled={!selectedDistrict}
+                >
                   <option value="">Select College</option>
-                  <option value="Employer">Employer</option>
-                  <option value="Job Seeker">Job Seeker</option>
+                  {selectedDistrict && collegeOptions[selectedDistrict].map((college, index) => (
+                    <option key={index} value={college}>
+                      {college}
+                    </option>
+                  ))}
                 </select>
                 <BsBuildings />
               </div>
             </div>
 
-            {(role1.length !== 0 && role2.length !== 0) && (
+            {selectedDistrict && selectedCollege && (
               <>
                 <div className="inputTag">
                   <label>Email Address</label>
@@ -111,9 +142,7 @@ const Login = () => {
                     <RiLock2Fill />
                   </div>
                 </div>
-                <button type="button" onClick={handleSubmit}>
-                  Login
-                </button>
+                <button type="submit">Login</button>
               </>
             )}
           </form>
