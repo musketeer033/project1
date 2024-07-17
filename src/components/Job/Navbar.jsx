@@ -2,7 +2,7 @@ import React from 'react';
 
 const Navbar = ({ onLogout }) => {
   return (
-    <div className="flex justify-between items-center mb-6">
+    <div className="flex justify-between items-center">
       <div className="flex items-center">
         <div className="bg-gray-200 rounded-full h-12 w-12 flex items-center justify-center text-gray-600 font-bold text-xl mr-3">
           <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Coat_of_arms_of_Chhattisgarh.svg/300px-Coat_of_arms_of_Chhattisgarh.svg.png' alt='' />

@@ -31,10 +31,19 @@ function VacancyForm() {
     console.log("Logout clicked");
   };
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+  return (<div className="min-h-screen">
+    <div className="px-10 py-3 shadoe-md">
+      <Navbar onLogout={handleLogout} />
+    </div>
+    <div className="flex items-center justify-center h-[90vh] bg-gray-100  pb-5">
+
       <div className="p-6 max-w-lg w-full bg-white rounded-xl shadow-md">
-        <Navbar onLogout={handleLogout} />
+
+
+      <div className="image">
+            <img src="/heroS.jpg" alt="hero" />
+          </div>
+          
         {!showForm && (
           <div className="text-center mb-4">
             <button
@@ -161,6 +170,7 @@ function VacancyForm() {
         )}
       </div>
     </div>
+  </div>
   );
 }
 

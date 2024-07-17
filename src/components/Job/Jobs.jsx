@@ -115,9 +115,12 @@ const Jobs = () => {
 
   return (
     <section className="jobs page bg-gray-100 py-10">
-      <div className="flex justify-end px-5"><button type="button" className="bg-blue-500 py-2 px-5 rounded-lg" onClick={handleSubmit}>
-                  College
-                </button></div>
+      <div className="flex justify-end px-5"> <button
+              onClick={()=>navigate("login")}
+              className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              College
+            </button></div>
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-between gap-4 mb-8">
           <img

@@ -1,5 +1,6 @@
 // import React from "react";
 import { FaBuilding, FaSuitcase, FaUsers, FaUserPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
   const details = [
@@ -28,9 +29,31 @@ const HeroSection = () => {
       icon: <FaUserPlus />,
     },
   ];
+
+  const navigate = useNavigate();
+
+  const handleAddVacancy = ()=>{
+    console.log("Add Vacancy")
+  }
   return (
     <>
       <div className="heroSection">
+        <div className=" flex justify-end px-10">
+          <div className=" flex gap-5">
+          <button
+              onClick={()=>navigate("/login")}
+              className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              College
+            </button>
+            <button
+              onClick={()=>navigate("/job/getall")}
+              className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              View Jobs
+            </button>
+          </div>
+        </div>
         <div className="container">
           <div className="title">
             <h1>Find a job that suits</h1>
