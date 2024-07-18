@@ -45,10 +45,10 @@ const Jobs = () => {
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleSubmit = () => {
-    console.log("hello");
-    navigate("/login");
-  };
+  // const handleSubmit = () => {
+  //   console.log("hello");
+  //   navigate("/login");
+  // };
 
   return (
     <section className="jobs page bg-gray-100 py-10">

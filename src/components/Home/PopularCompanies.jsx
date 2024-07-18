@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaMicrosoft, FaApple } from "react-icons/fa";
 import { SiTesla } from "react-icons/si";
 
 const PopularCompanies = () => {
+
+  const [jobs, setjobs] = useState()
+
+  useEffect(() => {
+    // Fetch jobs data from the API
+    axios
+      .get("https://vacancy.adnan-qasim.me/job/get-all-jobs")
+      .then((response) => {
+        console.log(response.data); // Ensure API response structure matches your needs
+        setjobs(response.data); // Set fetched jobs to state
+      })
+      .catch((error) => {
+        console.error("Error fetching jobs:", error);
+      });
+  }, []);
+
   const companies = [
     {
       id: 1,
@@ -31,7 +47,7 @@ const PopularCompanies = () => {
       <div className="container">
         <h3>TOP COMPANIES</h3>
         <div className="banner">
-          {companies.map((element) => {
+          {jobs.slice.map((element) => {
             return (
               <div className="card" key={element.id}>
                 <div className="content">
