@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Navbar from "./Navbar"; // Adjust the import path as per your file structure
 import axios from "axios"; // Import Axios for making HTTP requests
 import { useNavigate } from "react-router-dom";
+import { Context } from "../../main";
 
 function VacancyForm() {
+  const { isAuthorized, setIsAuthorized, user, setUser } = useContext(Context);
   const navigate = useNavigate();
   const [contactPerson, setContactPerson] = useState({
     name: "",
@@ -108,6 +110,12 @@ function VacancyForm() {
       // Optionally handle error - e.g., show error message
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      console.log(user, "data form context api");
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-100">
