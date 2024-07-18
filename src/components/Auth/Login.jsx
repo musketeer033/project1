@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLock2Fill } from "react-icons/ri";
 import { Link, Navigate, useNavigate } from "react-router-dom";
@@ -17,13 +17,19 @@ const Login = () => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [collegeOptions, setCollegeOptions] = useState({});
   const [collegeData, setCollegeData] = useState([]);
-  const { isAuthorized, setIsAuthorized, setSelectedCollege: setContextSelectedCollege } = useContext(Context);
+  const { isAuthorized, setIsAuthorized, user, setUser } = useContext(Context);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("data from context api", user);
+  }, [user]);
 
   useEffect(() => {
     const fetchDistrictAndCollegeOptions = async () => {
       try {
-        const response = await axios.get("https://vacancy.adnan-qasim.me/college/get-all-colleges");
+        const response = await axios.get(
+          "https://vacancy.adnan-qasim.me/college/get-all-colleges"
+        );
         setCollegeData(response.data);
         const groupedData = response.data.reduce((acc, item) => {
           const key = `${item.district_name} - Division ${item.division}`;
@@ -55,7 +61,9 @@ const Login = () => {
 
       const selectedCollegeObject = collegeData.find((item) => {
         const key = `${item.district_name} - Division ${item.division}`;
-        return key === selectedDistrict && item.institute_name === selectedCollege;
+        return (
+          key === selectedDistrict && item.institute_name === selectedCollege
+        );
       });
 
       if (!selectedCollegeObject) {
@@ -64,7 +72,9 @@ const Login = () => {
       }
 
       // Store the found object in context
-      setContextSelectedCollege(selectedCollegeObject);
+      // setContextSelectedCollege(selectedCollegeObject);
+      setUser(selectedCollegeObject);
+      console.log(selectedCollegeObject);
 
       const options = {
         method: "GET",
@@ -122,11 +132,12 @@ const Login = () => {
                   disabled={!selectedDistrict}
                 >
                   <option value="">Select College</option>
-                  {selectedDistrict && collegeOptions[selectedDistrict].map((college, index) => (
-                    <option key={index} value={college}>
-                      {college}
-                    </option>
-                  ))}
+                  {selectedDistrict &&
+                    collegeOptions[selectedDistrict].map((college, index) => (
+                      <option key={index} value={college}>
+                        {college}
+                      </option>
+                    ))}
                 </select>
                 <BsBuildings />
               </div>
