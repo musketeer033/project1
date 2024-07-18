@@ -1,6 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = ({ onLogout }) => {
+const Navbar = () => {
+
+  const navigete = useNavigate()
+  const onLogout = () =>{
+    localStorage.removeItem('adminId');
+    navigete('/login')
+  }
+
   return (
     <div className="flex justify-between items-center px-5 py-2">
       <div className="flex items-center">
