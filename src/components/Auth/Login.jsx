@@ -15,17 +15,16 @@ const Login = () => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedCollege, setSelectedCollege] = useState("");
   const [districtOptions, setDistrictOptions] = useState([]);
-  const [collegeOptions, setCollegeOptions] = useState([]);
-  const { isAuthorized, setIsAuthorized } = useContext(Context);
+  const [collegeOptions, setCollegeOptions] = useState({});
+  const [collegeData, setCollegeData] = useState([]);
+  const { isAuthorized, setIsAuthorized, setSelectedCollege: setContextSelectedCollege } = useContext(Context);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch division and college options
     const fetchDistrictAndCollegeOptions = async () => {
       try {
         const response = await axios.get("https://vacancy.adnan-qasim.me/college/get-all-colleges");
-        console.log(response.data);
-        // Group data by district and division
+        setCollegeData(response.data);
         const groupedData = response.data.reduce((acc, item) => {
           const key = `${item.district_name} - Division ${item.division}`;
           if (!acc[key]) {
@@ -43,13 +42,30 @@ const Login = () => {
       }
     };
 
-    // Call fetchDistrictAndCollegeOptions when component mounts
     fetchDistrictAndCollegeOptions();
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      if (!selectedDistrict || !selectedCollege) {
+        toast.error("Please select District/Division and College");
+        return;
+      }
+
+      const selectedCollegeObject = collegeData.find((item) => {
+        const key = `${item.district_name} - Division ${item.division}`;
+        return key === selectedDistrict && item.institute_name === selectedCollege;
+      });
+
+      if (!selectedCollegeObject) {
+        toast.error("Selected college data not found");
+        return;
+      }
+
+      // Store the found object in context
+      setContextSelectedCollege(selectedCollegeObject);
+
       const options = {
         method: "GET",
         url: "https://vacancy.adnan-qasim.me/college/college-admin-login",
@@ -57,7 +73,7 @@ const Login = () => {
       };
 
       const { data } = await axios.request(options);
-      console.log(data);
+      localStorage.setItem("id", data.clg_admin_id);
       toast.success("Login successful!");
       navigate("/vacancy");
     } catch (error) {
