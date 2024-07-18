@@ -83,7 +83,7 @@ const Login = () => {
       };
 
       const { data } = await axios.request(options);
-      localStorage.setItem("id", data.clg_admin_id);
+      localStorage.setItem("adminId", data.clg_admin_id);
       toast.success("Login successful!");
       navigate("/vacancy");
     } catch (error) {
