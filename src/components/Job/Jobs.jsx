@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
-import { FaFile } from "react-icons/fa";
+import { FaFile, FaFilePdf } from "react-icons/fa";
 import PopUp from "../PopUp";
 
 const Jobs = () => {
@@ -13,14 +13,14 @@ const Jobs = () => {
   const [selectedCollege, setSelectedCollege] = useState("");
   const [serachSubject, setSerachSubject] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [jobsPerPage] = useState(3); // Number of jobs per page
+  const [jobsPerPage] = useState(9); // Number of jobs per page
   const navigate = useNavigate();
   const [subject, setSubject] = useState([]);
   const [convertedData, setConvertedData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState([]);
 
-  const Division = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+  const Division = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,];
 
   useEffect(() => {
     allSubject();
@@ -203,61 +203,61 @@ const Jobs = () => {
             ))}
           </select>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
           {currentJobs.map((job, index) => (
             <div
               key={index}
               className="bg-white p-4 rounded-md shadow-md relative"
             >
-              <div className="">
-                <button className="" onClick={() => handleModal(job)}>
-                  show model
-                </button>
-              </div>
-              <div className="flex items-center mt-2 absolute right-3">
+              <div className="flex justify-end gap-2 items-center">
                 <a
                   href={job.job_desc}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
+                  className=""
                 >
-                  <FaFile size={25} />
+                  <FaFilePdf size="25" />
+
                 </a>
+                <button onClick={() => handleModal(job)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-3 rounded inline-flex items-center">
+                  <span>Apply Now</span>
+                </button>
+
+
               </div>
-              <h2 className="text-xl font-medium mb-2">
-                Vacancy -
-                <span className="text-lg">
+              <div className="flex items-center mt-2 absolute right-3">
+
+              </div>
+
+              <p className=" text-lg flex flex-row gap-1 mt-3">
+                <spam className="font-bold w-[35%]"> College Name:- </spam> <spam className="w-[65%] text-md"> {job.college_name}</spam>
+              </p>
+              <p className=" text-lg flex flex-row gap-1 mt-3">
+                <span className="font-bold w-[35%]">Subject:-</span>
+                <span className="w-[65%] text-md">
                   {job.vacancy_details[0].subject_name}
                 </span>
-              </h2>
+              </p>
+              <p className=" text-lg flex flex-row gap-1 mt-3">
+                <span className="font-bold w-[35%]">City/District:-</span> <span className="w-[65%] text-md">{job.college_district}</span>
+              </p>
 
-              <p className="text-gray-600 mb-1 text-lg">
-                Vacancy Count: {job.vacancy_details[0].vacancy_count}
+              <p className="text-lg flex flex-row gap-1 mt-3">
+                <span className="font-bold w-[35%]">Division:-</span> <span className="w-[65%] text-md">{job.college_division}</span>
               </p>
-              <p className="text-gray-600 mb-1 text-lg">
-                Division: {job.college_division}
+              <p className="text-lg flex flex-row gap-1 mt-3">
+                 <span className="font-bold w-[35%]">Vacancy Count:-</span> <span className="w-[65%] text-md">{job.vacancy_details[0].vacancy_count}</span>
               </p>
-              <p className="text-gray-600 mb-1 text-lg">
-                City/District: {job.college_district}
-              </p>
-              <p className="text-gray-600 mb-1 text-lg">
-                College Name: {job.college_name}
-              </p>
-              <p className="text-gray-600 mb-1 text-lg">
-                Last Date :
-                {dayjs(job.vacancy_details[0].apply_last_date).format(
+              
+
+              <p className="text-lg flex flex-row gap-1 mt-3">
+                <span className="font-bold w-[35%]">Last Date :</span>
+                <span className="w-[65%] text-md">{dayjs(job.vacancy_details[0].apply_last_date).format(
                   "YYYY-MM-DD"
-                )}
+                )}</span>
               </p>
-              <div className="">
-                <h1 className="text-[18px]">Contact -</h1>
-                <p className="text-gray-600 mb-1 text-lg">
-                  Name : {job.point_of_contact.poc_full_name}
-                </p>
-                <p className="text-gray-600 mb-1 text-lg ">
-                  Phone : {job.point_of_contact.poc_mobile_number}
-                </p>
-              </div>
+              
             </div>
           ))}
         </div>
@@ -269,11 +269,10 @@ const Jobs = () => {
               <button
                 key={index}
                 onClick={() => paginate(index + 1)}
-                className={`px-4 py-2 mx-1 rounded-md ${
-                  currentPage === index + 1
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-300 text-gray-800 hover:bg-gray-400"
-                }`}
+                className={`px-4 py-2 mx-1 rounded-md ${currentPage === index + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+                  }`}
               >
                 {index + 1}
               </button>
