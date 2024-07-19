@@ -196,35 +196,38 @@ const Jobs = () => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
           {currentJobs.map((job, index) => (
-            <div key={index} className="bg-white p-4 rounded-md shadow-md">
-              <h2 className="text-xl font-semibold mb-2">
-                Vacancy - {job.vacancy_details[0].subject_name}
+            <div key={index} className="bg-white p-4 rounded-md shadow-md ">
+              <h2 className="text-xl font-medium mb-2">
+                Vacancy -{" "}
+                <span className="text-lg">
+                  {job.vacancy_details[0].subject_name}
+                </span>
               </h2>
 
-              <p className="text-gray-600 mb-1">
+              <p className="text-gray-600 mb-1 text-lg">
                 Vacancy Count: {job.vacancy_details[0].vacancy_count}
               </p>
-              <p className="text-gray-600 mb-1">
+              <p className="text-gray-600 mb-1 text-lg">
                 Division: {job.college_division}
               </p>
-              <p className="text-gray-600 mb-1">
+              <p className="text-gray-600 mb-1 text-lg">
                 City/District: {job.college_district}
               </p>
-              <p className="text-gray-600 mb-1">
+              <p className="text-gray-600 mb-1 text-lg">
                 College Name: {job.college_name}
               </p>
-              <p className="text-gray-600 mb-1">
+              <p className="text-gray-600 mb-1 text-lg">
                 Last Date :
                 {dayjs(job.vacancy_details[0].apply_last_date).format(
                   "YYYY-MM-DD"
                 )}
               </p>
               <div className="">
-                <h1 className="text-lg">Contact -</h1>
-                <p className="text-gray-600 mb-1">
+                <h1 className="text-[18px]">Contact -</h1>
+                <p className="text-gray-600 mb-1 text-lg">
                   Name : {job.point_of_contact.poc_full_name}
                 </p>
-                <p className="text-gray-600 mb-1">
+                <p className="text-gray-600 mb-1 text-lg ">
                   Phone : {job.point_of_contact.poc_mobile_number}
                 </p>
               </div>
