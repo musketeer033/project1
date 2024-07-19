@@ -22,10 +22,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("data from context api", user);
-  }, [user]);
-
-  useEffect(() => {
     const fetchDistrictAndCollegeOptions = async () => {
       try {
         const response = await axios.get(
@@ -103,12 +99,6 @@ const Login = () => {
       toast.error("Failed to log in");
     }
   };
-
-  useEffect(() => {
-    console.log(districtOptions, "1");
-    console.log(selectedDistrict, "2");
-    console.log(collegeData, "3");
-  }, [districtOptions, selectedDistrict, collegeData]);
 
   return (
     <>

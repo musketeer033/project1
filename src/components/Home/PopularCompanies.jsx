@@ -11,7 +11,6 @@ const PopularCompanies = () => {
     axios
       .get("https://vacancy.adnan-qasim.me/job/get-all-jobs")
       .then((response) => {
-        console.log(response.data); // Ensure API response structure matches your needs
         setjobs(response.data); // Set fetched jobs to state
       })
       .catch((error) => {
@@ -29,6 +28,30 @@ const PopularCompanies = () => {
         <h3>TOP Vacancy</h3>
         <div className="banner">
           {jobs.slice(0, 4).map((element) => {
+            const vacancyDetails = element.vacancy_details[0]; // Assuming you want the first item in vacancy_details array
+
+            return (
+              <div
+                className="card flex flex-col justify-between "
+                key={vacancyDetails.vacancy_title}
+              >
+                <div className="content">
+                  {/* <div className="icon">{element.college_district}</div> */}
+                  <div className="text">
+                    <p>{vacancyDetails.subject_name}</p>
+                    <p>{element.college_name}</p>
+                  </div>
+                </div>
+
+                <button className="">
+                  Vacancies available: {vacancyDetails.vacancy_count}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <div className="banner">
+          {jobs.slice(4, 8).map((element) => {
             const vacancyDetails = element.vacancy_details[0]; // Assuming you want the first item in vacancy_details array
 
             return (
