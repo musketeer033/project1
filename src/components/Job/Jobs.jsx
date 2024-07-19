@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
+import { FaFile } from "react-icons/fa";
+import PopUp from "../PopUp";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -15,6 +17,8 @@ const Jobs = () => {
   const navigate = useNavigate();
   const [subject, setSubject] = useState([]);
   const [convertedData, setConvertedData] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState([]);
 
   const Division = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 
@@ -37,9 +41,6 @@ const Jobs = () => {
           new Set(response.data.map((job) => job.college_name))
         );
         setSearchCollege(collegeNames);
-
-        console.log("collegeNames", collegeNames);
-        console.log(response.data);
       })
       .catch(function (error) {
         console.error(error);
@@ -100,7 +101,6 @@ const Jobs = () => {
         transformedData.push(item);
       }
     });
-    console.log("transformedData", transformedData);
 
     setJobData(transformedData), setJobs(transformedData);
   };
@@ -115,7 +115,6 @@ const Jobs = () => {
       .request(options)
       .then(function (response) {
         setSubject(response.data);
-        console.log(response.data);
       })
       .catch(function (error) {
         console.error(error);
@@ -133,7 +132,17 @@ const Jobs = () => {
   // if (!jobs.length) {
   //   return <div className="loading">Loading...</div>
   // }
-  console.log("serachSubject", serachSubject);
+
+  const handleModal = (modal) => {
+    setShowModal(true);
+    setModalData(modal);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setModalData([]);
+  };
+
   return (
     <section className="jobs page bg-gray-100 py-10">
       <div className="flex justify-end px-5">
@@ -196,9 +205,27 @@ const Jobs = () => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
           {currentJobs.map((job, index) => (
-            <div key={index} className="bg-white p-4 rounded-md shadow-md ">
+            <div
+              key={index}
+              className="bg-white p-4 rounded-md shadow-md relative"
+            >
+              <div className="">
+                <button className="" onClick={() => handleModal(job)}>
+                  show model
+                </button>
+              </div>
+              <div className="flex items-center mt-2 absolute right-3">
+                <a
+                  href={job.job_desc}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  <FaFile size={25} />
+                </a>
+              </div>
               <h2 className="text-xl font-medium mb-2">
-                Vacancy -{" "}
+                Vacancy -
                 <span className="text-lg">
                   {job.vacancy_details[0].subject_name}
                 </span>
@@ -231,16 +258,6 @@ const Jobs = () => {
                   Phone : {job.point_of_contact.poc_mobile_number}
                 </p>
               </div>
-              <div className="flex items-center mt-2">
-                <a
-                  href={job.job_desc}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
-                >
-                  View PDF
-                </a>
-              </div>
             </div>
           ))}
         </div>
@@ -263,6 +280,7 @@ const Jobs = () => {
             )
           )}
         </div>
+        {showModal && <PopUp modalData={modalData} handleClose={closeModal} />}
       </div>
     </section>
   );

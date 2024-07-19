@@ -43,7 +43,6 @@ function VacancyForm() {
     const storedAdminId = localStorage.getItem("adminId");
     if (storedAdminId) {
       setAdminId(storedAdminId);
-      console.log(storedAdminId);
     } else {
       toast.error("Please log in to access this page");
       navigate("/login");
@@ -62,7 +61,7 @@ function VacancyForm() {
       );
       setSubjects(response.data); // Update subjects state with fetched data
     } catch (error) {
-      console.log(error); // Update error state
+      console.error(error); // Update error state
     }
   };
 
@@ -104,15 +103,11 @@ function VacancyForm() {
 
   const handleLogout = () => {
     navigate("/login");
-    console.log("Navigating to login page");
   };
 
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-
-    // Basic validation
-    console.log(contactPerson.name, contactPerson.contactInfo, vacancies);
 
     if (
       !contactPerson.name ||
@@ -150,8 +145,6 @@ function VacancyForm() {
       job_desc: "string",
     };
 
-    console.log(data);
-
     // API request using Axios
     try {
       const response = await axios.post(
@@ -164,7 +157,6 @@ function VacancyForm() {
       );
 
       const jobId = response.data.job_id; // Assume response contains job_id
-      console.log(response.data); // Log the response data
 
       // Optionally handle success - e.g., show success message, redirect, etc.
       if (jobId && file) {
@@ -215,7 +207,7 @@ function VacancyForm() {
 
     try {
       const response = await axios.request(options);
-      console.log(response.data); // Log the response data
+
       setFile(null);
       toast.success("Job Vacancy Doc Created Successfully");
     } catch (error) {
@@ -223,12 +215,6 @@ function VacancyForm() {
       // Handle error - e.g., show error message, retry upload
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      console.log(user, "data from context API");
-    }
-  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-100">
