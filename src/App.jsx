@@ -14,8 +14,8 @@ import Application from "./components/Application/Application";
 import MyApplications from "./components/Application/MyApplications";
 import PostJob from "./components/Job/PostJob";
 import NotFound from "./components/NotFound/NotFound";
-import MyJobs from "./components/Job/MyJobs";
-import VacancyForm from "./components/Job/MyJobs";
+import MyJobs from "./components/Job/Vacancy-form";
+import VacancyForm from "./components/Job/Vacancy-form";
 
 const App = () => {
   const { isAuthorized, setIsAuthorized, setUser } = useContext(Context);
@@ -43,13 +43,13 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* <Route path="/register" element={<Register />} /> */}
           <Route path="/" element={<Home />} />
           <Route path="/job/getall" element={<Jobs />} />
-          <Route path="/job/myjobs" element={<MyJobs />} />
-          <Route path="/applications" element={<Application />} />
-          <Route path="/applications/me" element={<MyApplications />} />
-          <Route path="/job/post" element={<PostJob />} />
+          {/* <Route path="/job/vacancy-form" element={<MyJobs />} /> */}
+          {/* <Route path="/applications" element={<Application />} /> */}
+          {/* <Route path="/applications/me" element={<MyApplications />} /> */}
+          {/* <Route path="/job/post" element={<PostJob />} /> */}
           <Route path="/vacancy" element={<VacancyForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

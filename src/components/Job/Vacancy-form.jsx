@@ -44,6 +44,9 @@ function VacancyForm() {
     if (storedAdminId) {
       setAdminId(storedAdminId);
       console.log(storedAdminId);
+    } else {
+      toast.error("Please log in to access this page");
+      navigate("/login");
     }
   };
 
