@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaMicrosoft, FaApple } from "react-icons/fa";
 import { SiTesla } from "react-icons/si";
@@ -19,48 +20,34 @@ const PopularCompanies = () => {
       });
   }, []);
 
-  const companies = [
-    {
-      id: 1,
-      title: "Microsoft",
-      location: "Bangalore, India",
-      openPositions: 10,
-      icon: <FaMicrosoft />,
-    },
-    {
-      id: 2,
-      title: "Tesla",
-      location: "USA",
-      openPositions: 5,
-      icon: <SiTesla />,
-    },
-    {
-      id: 3,
-      title: "Apple",
-      location: "California",
-      openPositions: 20,
-      icon: <FaApple />,
-    },
-  ];
+
+  if (!jobs || jobs.length === 0) {
+    return <div>Loading...</div>; // Display a loading state or handle empty data
+  }
+  
   return (
     <div className="companies">
       <div className="container">
-        <h3>TOP COMPANIES</h3>
+        <h3>TOP Vacancy</h3>
         <div className="banner">
-          {jobs.slice.map((element) => {
+          {jobs.slice(0, 4).map((element) => {
+            const vacancyDetails = element.vacancy_details[0]; // Assuming you want the first item in vacancy_details array
+
             return (
-              <div className="card" key={element.id}>
+              <div className="card" key={vacancyDetails.vacancy_title}>
                 <div className="content">
-                  <div className="icon">{element.icon}</div>
+                  {/* <div className="icon">{element.college_district}</div> */}
                   <div className="text">
-                    <p>{element.title}</p>
-                    <p>{element.location}</p>
+                    <p>{vacancyDetails.subject_name}</p>
+                    <p>{element.college_name}</p>
                   </div>
                 </div>
-                <button>Open Positions {element.openPositions}</button>
+                <button>Vacancies available: {vacancyDetails.vacancy_count}</button>
               </div>
             );
           })}
+
+
         </div>
       </div>
     </div>
