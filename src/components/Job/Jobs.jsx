@@ -4,52 +4,82 @@ import axios from "axios";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
+  const [jodData, setJobData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterCategory, setFilterCategory] = useState("");
-  const [filterCountry, setFilterCountry] = useState("");
+  const [searchCollege, setSearchCollege] = useState([]);
+  const [selectedCollege, setSelectedCollege] = useState("");
+  const [serachSubject, setSerachSubject] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [jobsPerPage] = useState(3); // Number of jobs per page
   const navigate = useNavigate();
+  const [subject, setSubject] = useState([]);
+
+  const Division = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 
   useEffect(() => {
-    // Fetch jobs data from the API
-    axios
-      .get("https://vacancy.adnan-qasim.me/job/get-all-jobs")
-      .then((response) => {
-        console.log(response.data); // Ensure API response structure matches your needs
-        setJobs(response.data); // Set fetched jobs to state
-      })
-      .catch((error) => {
-        console.error("Error fetching jobs:", error);
-      });
+    allSubject();
+    const options = { method: 'GET', url: 'https://vacancy.adnan-qasim.me/job/get-all-jobs' };
+
+    axios.request(options).then(function (response) {
+      setJobData(response.data);
+      setJobs(response.data); // Initialize jobs with fetched data
+
+      // Extract unique college names
+      const collegeNames = Array.from(new Set(response.data.map(job => job.college_name)));
+      setSearchCollege(collegeNames);
+
+      console.log("collegeNames", collegeNames);
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
   }, []);
 
-  // Filtered jobs based on search and filters
-  const filteredJobs = jobs.filter((job) => {
-    return (
-      job.vacancy_details[0].vacancy_title
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) &&
-      (filterCategory
-        ? job.vacancy_details[0].subject_name === filterCategory
-        : true) &&
-      (filterCountry ? job.college_state === filterCountry : true)
-    );
-  });
+  useEffect(() => {
+    let filteredJobs = jodData;
+  
+    if (searchTerm !== '') {
+      filteredJobs = filteredJobs.filter(job => job.college_division === Number(searchTerm));
+    }
+  
+    if (selectedCollege !== '') {
+      filteredJobs = filteredJobs.filter(job => job.college_name.toLowerCase().includes(selectedCollege.toLowerCase()));
+    }
+  
+    if (serachSubject !== '') {
+      filteredJobs = filteredJobs.filter(job =>
+        Array.isArray(job.vacancy_details) && 
+        job.vacancy_details.some(detail => detail.subject_name.toLowerCase().includes(serachSubject.toLowerCase()))
+      );
+    }
+  
+    setJobs(filteredJobs);
+  }, [searchTerm, selectedCollege, serachSubject, jodData]);
+  
+
+  const allSubject = () => {
+    const options = { method: 'GET', url: 'https://vacancy.adnan-qasim.me/job/get-all-subjects' };
+
+    axios.request(options).then(function (response) {
+      setSubject(response.data);
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+  };
 
   // Logic for pagination
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // const handleSubmit = () => {
-  //   console.log("hello");
-  //   navigate("/login");
-  // };
-
+  // if (!jobs.length) {
+  //   return <div className="loading">Loading...</div>
+  // }
+console.log("serachSubject",serachSubject)
   return (
     <section className="jobs page bg-gray-100 py-10">
       <div className="flex justify-end px-5">
@@ -72,40 +102,60 @@ const Jobs = () => {
           </h1>
         </div>
         <div className="mb-4 flex flex-col sm:flex-row gap-4">
-          <input
-            type="text"
-            placeholder="Search by title..."
-            className="p-2 border rounded-md w-full"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
           <select
             className="p-2 border rounded-md"
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           >
-            <option value="">All Categories</option>
-            <option value="Mathematics">Mathematics</option>
-            {/* Add other subject names as options */}
+            <option value="">All Division</option>
+            {Division.map((id) => (
+              <option
+                value={id}
+                key={id}
+              >
+                Division {id}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="p-2 border rounded-md"
+            value={selectedCollege}
+            onChange={(e) => setSelectedCollege(e.target.value)}
+          >
+            <option value="">All Colleges</option>
+            {searchCollege.map((college, index) => (
+              <option
+                value={college}
+                key={index}
+              >
+                {college}
+              </option>
+            ))}
           </select>
           <select
             className="p-2 border rounded-md"
-            value={filterCountry}
-            onChange={(e) => setFilterCountry(e.target.value)}
+            value={serachSubject}
+            onChange={(e) => setSerachSubject(e.target.value)}
           >
-            <option value="">All States</option>
-            <option value="CG">CG</option>
-            {/* Add other state options */}
+            <option value="">All Subjects</option>
+            {subject.map((subjectItem) => (
+              <option
+              value={subjectItem.subject_name}
+              >
+                {subjectItem.subject_name}
+              </option>
+            ))}
           </select>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
           {currentJobs.map((job) => (
             <div key={job.id} className="bg-white p-4 rounded-md shadow-md">
               <h2 className="text-xl font-semibold mb-2">
-                {job.vacancy_details[0].vacancy_title}
+                {job.vacancy_title}
               </h2>
               <p className="text-gray-600 mb-1">
-                Vacancy Count: {job.vacancy_details[0].vacancy_count}
+                Vacancy Count: {job.vacancy_count}
               </p>
               <p className="text-gray-600 mb-1">
                 Division: {job.college_division}
@@ -117,7 +167,7 @@ const Jobs = () => {
                 College Name: {job.college_name}
               </p>
               <p className="text-gray-600 mb-1">
-                Last Date: {job.vacancy_details[0].apply_last_date}
+                Last Date: {job.apply_last_date}
               </p>
               <div className="flex items-center mt-2">
                 <Link
@@ -141,16 +191,15 @@ const Jobs = () => {
         {/* Pagination */}
         <div className="mt-8 flex justify-center">
           {Array.from(
-            { length: Math.ceil(filteredJobs.length / jobsPerPage) },
+            { length: Math.ceil(jobs.length / jobsPerPage) },
             (_, index) => (
               <button
                 key={index}
                 onClick={() => paginate(index + 1)}
-                className={`px-4 py-2 mx-1 rounded-md ${
-                  currentPage === index + 1
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-300 text-gray-800 hover:bg-gray-400"
-                }`}
+                className={`px-4 py-2 mx-1 rounded-md ${currentPage === index + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+                  }`}
               >
                 {index + 1}
               </button>
