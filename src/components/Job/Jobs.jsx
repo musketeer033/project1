@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import dayjs from "dayjs";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -13,59 +14,112 @@ const Jobs = () => {
   const [jobsPerPage] = useState(3); // Number of jobs per page
   const navigate = useNavigate();
   const [subject, setSubject] = useState([]);
+  const [convertedData, setConvertedData] = useState([]);
 
   const Division = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 
   useEffect(() => {
     allSubject();
-    const options = { method: 'GET', url: 'https://vacancy.adnan-qasim.me/job/get-all-jobs' };
+    const options = {
+      method: "GET",
+      url: "https://vacancy.adnan-qasim.me/job/get-all-jobs",
+    };
 
-    axios.request(options).then(function (response) {
-      setJobData(response.data);
-      setJobs(response.data); // Initialize jobs with fetched data
+    axios
+      .request(options)
+      .then(function (response) {
+        transformData(response.data);
+        // setJobData(response.data);
+        // setJobs(response.data); // Initialize jobs with fetched data
 
-      // Extract unique college names
-      const collegeNames = Array.from(new Set(response.data.map(job => job.college_name)));
-      setSearchCollege(collegeNames);
+        // Extract unique college names
+        const collegeNames = Array.from(
+          new Set(response.data.map((job) => job.college_name))
+        );
+        setSearchCollege(collegeNames);
 
-      console.log("collegeNames", collegeNames);
-      console.log(response.data);
-    }).catch(function (error) {
-      console.error(error);
-    });
+        console.log("collegeNames", collegeNames);
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   }, []);
 
   useEffect(() => {
     let filteredJobs = jodData;
-  
-    if (searchTerm !== '') {
-      filteredJobs = filteredJobs.filter(job => job.college_division === Number(searchTerm));
-    }
-  
-    if (selectedCollege !== '') {
-      filteredJobs = filteredJobs.filter(job => job.college_name.toLowerCase().includes(selectedCollege.toLowerCase()));
-    }
-  
-    if (serachSubject !== '') {
-      filteredJobs = filteredJobs.filter(job =>
-        Array.isArray(job.vacancy_details) && 
-        job.vacancy_details.some(detail => detail.subject_name.toLowerCase().includes(serachSubject.toLowerCase()))
+
+    if (searchTerm !== "") {
+      filteredJobs = filteredJobs.filter(
+        (job) => job.college_division === Number(searchTerm)
       );
     }
-  
+
+    if (selectedCollege !== "") {
+      filteredJobs = filteredJobs.filter((job) =>
+        job.college_name.toLowerCase().includes(selectedCollege.toLowerCase())
+      );
+    }
+
+    if (serachSubject !== "") {
+      filteredJobs = filteredJobs.filter(
+        (job) =>
+          Array.isArray(job.vacancy_details) &&
+          job.vacancy_details.some((detail) =>
+            detail.subject_name
+              .toLowerCase()
+              .includes(serachSubject.toLowerCase())
+          )
+      );
+    }
+    setCurrentPage(1); // Reset current page when filters change
     setJobs(filteredJobs);
   }, [searchTerm, selectedCollege, serachSubject, jodData]);
-  
+
+  const transformData = (data) => {
+    const transformedData = [];
+
+    data.forEach((item) => {
+      const vacancyDetails = item.vacancy_details || [];
+
+      if (vacancyDetails.length > 1) {
+        vacancyDetails.forEach((vacancy) => {
+          const newItem = {
+            college_district: item.college_district,
+            college_division: item.college_division,
+            college_name: item.college_name,
+            college_state: item.college_state,
+            id: item.id,
+            job_desc: item.job_desc,
+            point_of_contact: item.point_of_contact,
+            vacancy_details: [vacancy],
+          };
+          transformedData.push(newItem);
+        });
+      } else {
+        transformedData.push(item);
+      }
+    });
+    console.log("transformedData", transformedData);
+
+    setJobData(transformedData), setJobs(transformedData);
+  };
 
   const allSubject = () => {
-    const options = { method: 'GET', url: 'https://vacancy.adnan-qasim.me/job/get-all-subjects' };
+    const options = {
+      method: "GET",
+      url: "https://vacancy.adnan-qasim.me/job/get-all-subjects",
+    };
 
-    axios.request(options).then(function (response) {
-      setSubject(response.data);
-      console.log(response.data);
-    }).catch(function (error) {
-      console.error(error);
-    });
+    axios
+      .request(options)
+      .then(function (response) {
+        setSubject(response.data);
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   };
 
   // Logic for pagination
@@ -79,7 +133,7 @@ const Jobs = () => {
   // if (!jobs.length) {
   //   return <div className="loading">Loading...</div>
   // }
-console.log("serachSubject",serachSubject)
+  console.log("serachSubject", serachSubject);
   return (
     <section className="jobs page bg-gray-100 py-10">
       <div className="flex justify-end px-5">
@@ -109,10 +163,7 @@ console.log("serachSubject",serachSubject)
           >
             <option value="">All Division</option>
             {Division.map((id) => (
-              <option
-                value={id}
-                key={id}
-              >
+              <option value={id} key={id}>
                 Division {id}
               </option>
             ))}
@@ -125,10 +176,7 @@ console.log("serachSubject",serachSubject)
           >
             <option value="">All Colleges</option>
             {searchCollege.map((college, index) => (
-              <option
-                value={college}
-                key={index}
-              >
+              <option value={college} key={index}>
                 {college}
               </option>
             ))}
@@ -140,22 +188,21 @@ console.log("serachSubject",serachSubject)
           >
             <option value="">All Subjects</option>
             {subject.map((subjectItem) => (
-              <option
-              value={subjectItem.subject_name}
-              >
+              <option value={subjectItem.subject_name}>
                 {subjectItem.subject_name}
               </option>
             ))}
           </select>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-          {currentJobs.map((job) => (
-            <div key={job.id} className="bg-white p-4 rounded-md shadow-md">
+          {currentJobs.map((job, index) => (
+            <div key={index} className="bg-white p-4 rounded-md shadow-md">
               <h2 className="text-xl font-semibold mb-2">
-                {job.vacancy_title}
+                Vacancy - {job.vacancy_details[0].subject_name}
               </h2>
+
               <p className="text-gray-600 mb-1">
-                Vacancy Count: {job.vacancy_count}
+                Vacancy Count: {job.vacancy_details[0].vacancy_count}
               </p>
               <p className="text-gray-600 mb-1">
                 Division: {job.college_division}
@@ -167,15 +214,21 @@ console.log("serachSubject",serachSubject)
                 College Name: {job.college_name}
               </p>
               <p className="text-gray-600 mb-1">
-                Last Date: {job.apply_last_date}
+                Last Date :
+                {dayjs(job.vacancy_details[0].apply_last_date).format(
+                  "YYYY-MM-DD"
+                )}
               </p>
+              <div className="">
+                <h1 className="text-lg">Contact -</h1>
+                <p className="text-gray-600 mb-1">
+                  Name : {job.point_of_contact.poc_full_name}
+                </p>
+                <p className="text-gray-600 mb-1">
+                  Phone : {job.point_of_contact.poc_mobile_number}
+                </p>
+              </div>
               <div className="flex items-center mt-2">
-                <Link
-                  to={`/job/${job.id}`}
-                  className="text-blue-500 hover:underline mr-4"
-                >
-                  View Details
-                </Link>
                 <a
                   href={job.job_desc}
                   target="_blank"
@@ -196,10 +249,11 @@ console.log("serachSubject",serachSubject)
               <button
                 key={index}
                 onClick={() => paginate(index + 1)}
-                className={`px-4 py-2 mx-1 rounded-md ${currentPage === index + 1
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-300 text-gray-800 hover:bg-gray-400"
-                  }`}
+                className={`px-4 py-2 mx-1 rounded-md ${
+                  currentPage === index + 1
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+                }`}
               >
                 {index + 1}
               </button>
