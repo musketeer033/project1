@@ -459,7 +459,10 @@ function VacancyForm() {
                     </div>
 
                     {loading ? (
-                      <button className="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
+                      <button
+                        disabled="true"
+                        className="w-full py-2 px-4 bg-blue-200 text-white rounded"
+                      >
                         Add Vacancies
                       </button>
                     ) : (
