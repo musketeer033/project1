@@ -17,6 +17,7 @@ const Login = () => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [collegeOptions, setCollegeOptions] = useState({});
   const [collegeData, setCollegeData] = useState([]);
+  // const [extractedInteger, setExtractedInteger] = useState(null);
   const { isAuthorized, setIsAuthorized, user, setUser } = useContext(Context);
   const navigate = useNavigate();
 
@@ -51,14 +52,23 @@ const Login = () => {
     fetchDistrictAndCollegeOptions();
   }, []);
 
+  const extractInteger = (districtString) => {
+    const parts = districtString.split(" ");
+    const lastPart = parts[parts.length - 1];
+    const number = parseInt(lastPart);
+    return isNaN(number) ? null : number;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      if (!selectedDistrict || !selectedCollege) {
-        toast.error("Please select District/Division and College");
-        return;
-      }
 
+    // Basic form validation
+    if (!selectedDistrict || !selectedCollege || !password) {
+      toast.error("Please fill out all fields");
+      return;
+    }
+
+    try {
       const selectedCollegeObject = collegeData.find((item) => {
         const key = `${item.district_name} - Division ${item.division}`;
         return (
@@ -71,26 +81,34 @@ const Login = () => {
         return;
       }
 
-      // Store the found object in context
-      // setContextSelectedCollege(selectedCollegeObject);
-      setUser(selectedCollegeObject);
-      console.log(selectedCollegeObject);
-
       const options = {
-        method: "GET",
+        method: "POST",
         url: "https://vacancy.adnan-qasim.me/college/college-admin-login",
-        params: { phone: password, email: email },
+        headers: { "Content-Type": "application/json" },
+        data: {
+          phone: password,
+          division: extractInteger(selectedDistrict),
+          institute_name: selectedCollege,
+          email: email,
+        },
       };
 
-      const { data } = await axios.request(options);
-      localStorage.setItem("adminId", data.clg_admin_id);
+      const response = await axios.request(options);
+
+      localStorage.setItem("adminId", response.data.clg_admin_id);
       toast.success("Login successful!");
       navigate("/vacancy");
     } catch (error) {
-      console.error(error);
+      console.error("Login error:", error);
       toast.error("Failed to log in");
     }
   };
+
+  useEffect(() => {
+    console.log(districtOptions, "1");
+    console.log(selectedDistrict, "2");
+    console.log(collegeData, "3");
+  }, [districtOptions, selectedDistrict, collegeData]);
 
   return (
     <>
